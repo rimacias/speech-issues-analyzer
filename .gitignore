@@ -1,0 +1,7 @@
+/trainer/data/
+/.venv/
+/whisper_env/
+/trainer/outputs/
+**/.idea
+/trainer/trainer_output_logs/
+/trainer/test_results.csv
