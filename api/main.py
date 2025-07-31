@@ -1,7 +1,7 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
 from trainer.utils.preprocess import preprocess_audio
-from trainer.model.analyzer import analyze_audio
+from api.model.analyzer import analyze_audio
 from contextlib import asynccontextmanager
 
 import shutil
@@ -11,14 +11,40 @@ import uuid
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    yield
-    # Shutdown
+    print("Starting up Speech Issues Analyzer API...")
     temp_dir = "temp_uploads"
-    if os.path.exists(temp_dir):
-        shutil.rmtree(temp_dir, ignore_errors=True)
-        print(f"Temporary directory {temp_dir} cleaned up.")
-    else:
-        print(f"No temporary directory {temp_dir} to clean up.")
+    os.makedirs(temp_dir, exist_ok=True)
+    print(f"Temporary directory {temp_dir} ready.")
+
+    yield
+
+    # Shutdown
+    print("Shutting down Speech Issues Analyzer API...")
+    try:
+        # Clean up temporary files
+        if os.path.exists(temp_dir):
+            # Clean individual files first to handle any locked files
+            for filename in os.listdir(temp_dir):
+                file_path = os.path.join(temp_dir, filename)
+                try:
+                    if os.path.isfile(file_path):
+                        os.remove(file_path)
+                        print(f"Removed temporary file: {filename}")
+                except Exception as e:
+                    print(f"Warning: Could not remove file {filename}: {e}")
+
+            # Remove the directory
+            try:
+                shutil.rmtree(temp_dir, ignore_errors=True)
+                print(f"Temporary directory {temp_dir} cleaned up successfully.")
+            except Exception as e:
+                print(f"Warning: Could not remove directory {temp_dir}: {e}")
+        else:
+            print(f"No temporary directory {temp_dir} to clean up.")
+
+        print("Shutdown completed successfully.")
+    except Exception as e:
+        print(f"Error during shutdown: {e}")
 
 app = FastAPI(title="Speech Issues Analyzer API", lifespan=lifespan)
 
