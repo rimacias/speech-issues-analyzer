@@ -13,7 +13,7 @@ for subfolder in os.listdir(root_folder):
     subfolder_path = f"{root_folder}/{subfolder}/respuestas"
     if os.path.isdir(subfolder_path):
         for filename in os.listdir(subfolder_path):
-            if filename.endswith('.m4a'):
+            if filename.endswith('.wav'):
                 # Remove extension and split by '-'
                 name_wo_ext = filename[:-4]
                 parts = name_wo_ext.split('-')
@@ -21,7 +21,7 @@ for subfolder in os.listdir(root_folder):
                     actual_pronunciation = parts[0].strip()
                     real_word = parts[1].strip()
                     label = parts[2].strip()
-                    transcription = real_word  # Use the real word as transcription
+                    transcription = actual_pronunciation  # Use the real word as transcription
 
                     # Build full path with forward slashes
                     file_path = f"{root_folder}/{subfolder}/respuestas/{filename}"

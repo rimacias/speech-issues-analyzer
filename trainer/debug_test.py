@@ -3,7 +3,7 @@ import torch
 import librosa
 from transformers import WhisperProcessor, WhisperForConditionalGeneration
 
-def debug_transcription():
+def debug_transcription(audio_path=None):
     """Debug transcription to see what's happening"""
 
     # Load model
@@ -15,7 +15,6 @@ def debug_transcription():
     model = model.to(device)
 
     # Test with one audio file
-    audio_path = "data/441/respuestas/agua bp.m4a"
     print(f"Testing audio file: {audio_path}")
 
     if not os.path.exists(audio_path):
@@ -68,8 +67,8 @@ def debug_transcription():
 
         # Test with the original base model for comparison
         print("\n=== Testing Original Whisper Model ===")
-        base_model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-small")
-        base_processor = WhisperProcessor.from_pretrained("openai/whisper-small")
+        base_model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-medium")
+        base_processor = WhisperProcessor.from_pretrained("openai/whisper-medium")
         base_model = base_model.to(device)
 
         base_inputs = base_processor(audio, sampling_rate=16000, return_tensors="pt")
@@ -86,4 +85,20 @@ def debug_transcription():
         print(f"Base model transcription: '{base_transcription}'")
 
 if __name__ == "__main__":
-    debug_transcription()
+    # Debug for all audio files in data folder
+    # get all .m4a files in the data folder recursively walking through subfolders
+    audio_files = []
+    for root, dirs, files in os.walk('data'):
+        for file in files:
+            if file.endswith('.m4a'):
+                audio_files.append(os.path.relpath(os.path.join(root, file), 'data'))
+                break
+    audio_files = sorted(audio_files)  # Sort for consistent order
+
+    if not audio_files:
+        print("No audio files found in 'data' folder.")
+    else:
+        for audio_file in audio_files:
+            audio_file = os.path.join('data', audio_file)
+            print(f"Debugging transcription for: {audio_file}")
+            debug_transcription(audio_file)

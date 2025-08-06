@@ -41,7 +41,7 @@ def main():
         return
 
     # 3. Load model and processor
-    model_name = "openai/whisper-small"
+    model_name = "openai/whisper-medium"
     processor = WhisperProcessor.from_pretrained(model_name)
     model = WhisperForConditionalGeneration.from_pretrained(model_name)
 

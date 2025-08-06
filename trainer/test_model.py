@@ -2,8 +2,6 @@ import os
 import torch
 import librosa
 import pandas as pd
-import numpy as np
-import re
 from transformers import (
     WhisperProcessor,
     WhisperForConditionalGeneration
@@ -72,26 +70,15 @@ def transcribe_audio(audio_path, model, processor, device):
             transcription = processor.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
             print(f"    Alternative transcription: '{transcription}'")
 
-        # Extract classification from the formatted output
-        # Expected format: "transcription [label]"
-        classification_match = re.search(r'\[([^\]]+)\]', transcription)
-        if classification_match:
-            predicted_label = classification_match.group(1).strip()
-            # Extract just the transcription part (before the bracket)
-            transcription_text = re.sub(r'\s*\[.*?\]', '', transcription).strip()
-        else:
-            # If no classification found, assume normal speech
-            predicted_label = "normal"
-            transcription_text = transcription.strip()
-
-        return transcription_text, predicted_label
+        # Only return the transcription, ignore any label
+        return transcription.strip(), None
 
     except Exception as e:
         print(f"Error transcribing {audio_path}: {str(e)}")
         return "", "normal"
 
 def test_model_effectiveness():
-    """Test the fine-tuned model on a subset of data"""
+    """Test the fine-tuned model on a subset of data and print both expected and predicted transcriptions"""
 
     print("Speech Issues Analyzer - Model Testing")
     print("=" * 50)
@@ -116,45 +103,48 @@ def test_model_effectiveness():
 
     df = pd.read_csv(data_csv)
 
-    # Use a subset for testing (first 20 samples)
-    test_df = df.head(20)
+    test_df = df
 
     print(f"Testing on {len(test_df)} audio samples...")
 
+    correct_count = 0
+    total = len(test_df)
     results = []
 
     for idx, row in test_df.iterrows():
         audio_path = row['file_path']
         expected_transcription = row['transcription']
-        expected_label = row['transcription']
-
         print(f"Testing {idx+1}/{len(test_df)}: {os.path.basename(audio_path)}")
 
         if not os.path.exists(audio_path):
             print(f"  Warning: Audio file not found: {audio_path}")
             predicted_transcription = ""
-            predicted_label = "normal"
         else:
-            predicted_transcription, predicted_label = transcribe_audio(
-                audio_path, model, processor, device
-            )
+            predicted_transcription, _ = transcribe_audio(audio_path, model, processor, device)
 
-        # Check if classification is correct
-        is_correct = predicted_label == expected_label
-
-        print(f"  Expected: '{expected_transcription}' ({expected_label})")
-        print(f"  Predicted: '{predicted_transcription}' ({predicted_label})")
-        print(f"  Correct: {is_correct}")
-        print()
-
+        is_correct = predicted_transcription.strip().lower() == str(expected_transcription).strip().lower()
+        if is_correct:
+            correct_count += 1
         results.append({
             'audio_file': os.path.basename(audio_path),
             'expected_transcription': expected_transcription,
             'predicted_transcription': predicted_transcription,
-            'expected_label': expected_label,
-            'predicted_label': predicted_label,
             'correct': is_correct
         })
+
+        print(f"  Expected: '{expected_transcription}'")
+        print(f"  Predicted: '{predicted_transcription}'")
+        print(f"  Correct: {is_correct}\n")
+
+    accuracy = correct_count / total if total > 0 else 0
+    print("=" * 50)
+    print("Testing complete.")
+    print(f"Accuracy: {accuracy:.2%} ({correct_count}/{total})")
+    print("=" * 50)
+    # Optionally save results
+    pd.DataFrame(results).to_csv('test_results.csv', index=False)
+    print("Detailed results saved to: test_results.csv")
+    return None
 
     # Calculate overall accuracy
     correct_predictions = sum(1 for r in results if r['correct'])
