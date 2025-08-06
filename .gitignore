@@ -5,3 +5,5 @@
 **/.idea
 /trainer/trainer_output_logs/
 /trainer/test_results.csv
+/api/model/whisper-finetuned*
+/api/requirements.txt

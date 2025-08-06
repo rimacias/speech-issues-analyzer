@@ -1,5 +1,6 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from trainer.utils.preprocess import preprocess_audio
 from api.model.analyzer import analyze_audio
 from contextlib import asynccontextmanager
@@ -48,6 +49,15 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Speech Issues Analyzer API", lifespan=lifespan)
 
+# Allow CORS for localhost
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost", "http://localhost:3000", "http://127.0.0.1", "http://127.0.0.1:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.post("/analyze")
 async def analyze_speech(file: UploadFile = File(...)):
@@ -65,7 +75,7 @@ async def analyze_speech(file: UploadFile = File(...)):
         preprocessed_path = preprocess_audio(temp_path)
 
         # Analyze file (speech-to-text + NLP)
-        result = analyze_audio(preprocessed_path)
+        result = analyze_audio(preprocessed_path, base=True)
 
         # Clean up
         os.remove(temp_path)
