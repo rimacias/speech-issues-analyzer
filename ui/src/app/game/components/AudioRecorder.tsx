@@ -88,7 +88,7 @@ export function AudioRecorder({ state, onStartRecording, onStopRecording }: Audi
             <h3 className="text-lg font-semibold text-gray-800">Tu grabación:</h3>
             <span className="text-2xl ml-2">🎵</span>
           </div>
-          <audio controls className="w-full" src={audioUrl} />
+          <audio controls className="w-full" src={audioUrl || ''} />
         </div>
       )}
 
