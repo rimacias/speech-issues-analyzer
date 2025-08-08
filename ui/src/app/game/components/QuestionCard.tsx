@@ -25,7 +25,7 @@ export function QuestionCard({ question }: QuestionCardProps) {
   const emoji = getQuestionEmoji(question.question);
 
   return (
-    <div className="mt-2 mb-1 z-1">
+    <div className="mt-2 mb-2 z-1">
       <div className="text-center mb-1">
         <div className="text-6xl mb-1 animate-none">{emoji}</div>
         <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center justify-center">
@@ -33,8 +33,8 @@ export function QuestionCard({ question }: QuestionCardProps) {
           Completa la oración:
           <span className="text-3xl ml-3">💭</span>
         </h2>
-        <div className="bg-white rounded-xl p-4 shadow-md border-3 border-dashed border-purple-300">
-          <p className="text-xl text-gray-700 leading-relaxed font-medium">
+        <div className="bg-white rounded-xl p-4 shadow-md border-3 border-dashed border-purple-300 w-3/4 mx-auto">
+          <p className="text-xl text-gray-700 leading-relaxed font-medium p-4">
             {question.question}
           </p>
         </div>
