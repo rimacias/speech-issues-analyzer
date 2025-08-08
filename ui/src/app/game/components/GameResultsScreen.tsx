@@ -1,5 +1,6 @@
 import {GameAnswer, GameStats} from "@/app/game/types";
 import {Button, Card} from "@/app/game/components/ui";
+import Forest from "./Forest";
 
 interface GameResultsScreenProps {
   stats: GameStats;
@@ -19,8 +20,9 @@ export function GameResultsScreen({ stats, answers, onResetGame }: GameResultsSc
   const performance = getPerformanceMessage(stats.percentage);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-50 to-yellow-100">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen flex items-center justify-center">
+      <Forest />
+      <div className="container mx-auto px-4 py-8 z-1">
         <div className="max-w-4xl mx-auto">
           {/* Results Header */}
           <Card className="mb-8 text-center bg-gradient-to-br from-white to-blue-50">

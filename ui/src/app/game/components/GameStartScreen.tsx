@@ -1,6 +1,7 @@
 import { Button, Card } from "@/app/game/components/ui";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMicrophone } from '@fortawesome/free-solid-svg-icons';
+import Forest from "./Forest";
 
 interface GameStartScreenProps {
   totalQuestions: number;
@@ -10,16 +11,17 @@ interface GameStartScreenProps {
 
 export function GameStartScreen({ totalQuestions, maxScore, onStartGame }: GameStartScreenProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-50 to-yellow-100 flex items-center justify-center">
-      <Card className="max-w-2xl mx-4 text-center bg-white">
-        <div className="mb-6">
+    <div className="min-h-screen flex items-center justify-center">
+      <Forest/>
+      <Card className="flex flex-col h-fit max-w-2xl mx-4 text-center bg-white z-1">
+        <div className="mb-2">
           {/* Fun emoji header */}
           <div className="text-6xl mb-4">🎮✨</div>
           <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
             <FontAwesomeIcon icon={faMicrophone} className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
-            🌟 ¡Juego de Completar Palabras! 🌟
+             ¡Juego de Completar Palabras!
           </h1>
           <p className="text-lg text-gray-600 mb-6">
             🎤 Escucha las preguntas y responde completando las oraciones.

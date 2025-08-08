@@ -13,7 +13,7 @@ export function AudioRecorder({ state, onStartRecording, onStopRecording }: Audi
   const { isRecording, isAnalyzing, audioUrl } = state;
 
   return (
-    <Card className="text-center bg-gradient-to-br from-green-50 to-blue-50">
+    <Card className="text-center bg-gradient-to-br from-green-50 to-blue-50 z-1">
       {/* Microphone Button */}
       <div className="mb-6">
         <div className={`inline-flex items-center justify-center w-32 h-32 rounded-full mb-6 transition-all duration-300 ${

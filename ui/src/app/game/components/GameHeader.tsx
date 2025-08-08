@@ -8,7 +8,7 @@ interface GameHeaderProps {
 
 export function GameHeader({ stats, currentQuestionPoints }: GameHeaderProps) {
   return (
-    <Card className="mb-8">
+    <Card className="mb-8 z-1">
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center gap-4">
           <div className="text-2xl font-bold text-gray-800 flex items-center">
