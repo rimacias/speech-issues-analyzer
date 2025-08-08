@@ -10,7 +10,7 @@ export function AnswerResult({ result, points }: AnswerResultProps) {
   return (
     <Card
       variant={result.correct ? 'success' : 'error'}
-      className="mb-8 animate-fadeIn"
+      className="mb-8 animate-fadeIn z-1"
     >
       <div className="text-center">
         {/* Result Animation */}

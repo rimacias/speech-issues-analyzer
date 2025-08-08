@@ -11,6 +11,7 @@ import { QuestionCard } from './components/QuestionCard';
 import { AudioRecorder } from './components/AudioRecorder';
 import { AnswerResult } from './components/AnswerResult';
 import { GameResultsScreen } from './components/GameResultsScreen';
+import Forest from './components/Forest';
 
 export default function Game() {
     const gameState = useGameState({ questions: gameQuestions });
@@ -63,8 +64,9 @@ export default function Game() {
 
     // Main Game Screen
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100">
-            <div className="container mx-auto px-4 py-8">
+       <div className="min-h-screen flex items-center justify-center">
+            <Forest />
+            <div className="container mx-auto px-4 py-8 z-1">
                 <div className="max-w-4xl mx-auto">
                     <GameHeader
                         stats={gameState.stats}
