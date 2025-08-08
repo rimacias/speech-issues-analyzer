@@ -16,7 +16,7 @@ export function AudioRecorder({ state, onStartRecording, onStopRecording }: Audi
     <div className="text-center z-1">
       {/* Microphone Button */}
       <div>
-        <div className={`inline-flex mt-2 items-center justify-center w-24 h-24 rounded-full transition-all duration-300 ${
+        <div className={`inline-flex mt-1 items-center justify-center w-22 h-22 rounded-full transition-all duration-300 ${
           isRecording 
             ? 'bg-gradient-to-r from-red-400 to-pink-500 animate-pulse shadow-lg shadow-red-200' 
             : 'bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 shadow-lg hover:shadow-xl'

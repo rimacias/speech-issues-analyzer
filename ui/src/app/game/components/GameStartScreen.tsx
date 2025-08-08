@@ -12,10 +12,10 @@ interface GameStartScreenProps {
 
 export function GameStartScreen({ totalQuestions, maxScore, onStartGame }: GameStartScreenProps) {
   return (
-    <div className="min-h-screen h-screen w-screen flex items-center justify-center">
+    <div className="min-h-screen h-screen w-screen flex items-center justify-center bg-amber-50">
       <Forest/>
-      <Card className="flex flex-col h-fit w-2/3 max-w-2xl mx-4 text-center bg-white z-1">
-        <div className="mb-2">
+      <Card className="flex flex-col w-2/3 max-w-2xl mx-4 text-center z-1">
+        <div>
           {/* Fun emoji header */}
           <div className="text-6xl mb-4">🎮✨</div>
 

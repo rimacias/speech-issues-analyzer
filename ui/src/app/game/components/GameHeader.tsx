@@ -10,14 +10,14 @@ interface GameHeaderProps {
 
 export function GameHeader({ stats, currentQuestionPoints }: GameHeaderProps) {
   return (
-    <Card className="m-1 z-1">
-      <div className="flex justify-between items-center mb-2">
-        <div className="flex justify-between w-full items-center gap-2">
+    <Card className="z-1">
+      <div className="flex justify-between items-center ">
+        <div className="flex justify-between w-full items-center">
           <div className="text-2xl font-bold text-gray-800 flex items-center">
             <span className="text-3xl mr-2">📝</span>
             Pregunta {stats.currentQuestionIndex + 1} de {stats.totalQuestions}
           </div>
-          <div className="flex bg-gradient-to-r from-yellow-400 to-orange-500 px-4 py-2 rounded-lg items-center">
+          <div className="flex bg-gradient-to-r from-yellow-400 to-orange-500 px-4 py-1 rounded-lg items-center">
             <div className="relative">
             <FontAwesomeIcon icon={faStar} className="relative text-yellow-400 stroke-50 stroke-white" size="2x"
             />
