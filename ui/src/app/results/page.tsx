@@ -1,47 +1,143 @@
 "use client";
 
-import AuthLayout from "@/components/AuthLayout";
-import Navbar from "@/components/Navbar";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useState } from 'react';
+import { useAuth } from '@/lib/auth-context';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useResultsData } from '@/hooks/useResultsData';
+import { useSessionSelection } from '@/hooks/useSessionSelection';
+import type { Patient } from '@/types/patient';
 
-export default function Results() {
-  const { t } = useLanguage();
+// Components
+import { SessionOverview } from '@/components/results/SessionOverview';
+import { PatientSelector } from '@/components/results/PatientSelector';
+import { SessionsList } from '@/components/results/SessionsList';
+import { SessionDetails } from '@/components/results/SessionDetails';
+import { ResultsStats } from '@/components/results/ResultsStats';
 
-  return (
-    <AuthLayout>
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          <div className="px-4 py-6 sm:px-0">
-            <div className="bg-white shadow rounded-lg p-6">
-              <h1 className="text-2xl font-bold text-gray-900 mb-4">
-                {t('navigation.results')}
-              </h1>
-              <p className="text-gray-600 mb-8">
-                {t('navigation.resultsDescription')}
-              </p>
+export default function ResultsPage() {
+    const { user } = useAuth();
+    const { t } = useLanguage();
+    const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
 
-              {/* Placeholder content for results dashboard */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
-                  <h3 className="text-lg font-semibold text-blue-900 mb-2">Test Results Overview</h3>
-                  <p className="text-blue-700">Coming soon: Comprehensive test results and analytics dashboard</p>
+    // Custom hooks for data management
+    const {
+        loading,
+        error,
+        patients,
+        gameSessions,
+        refreshData
+    } = useResultsData(user?.uid, selectedPatient);
+
+    const { selectedSession, setSelectedSession } = useSessionSelection(selectedPatient);
+
+    if (!user) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <h2 className="text-2xl font-semibold text-gray-800 mb-4">Authentication Required</h2>
+                    <p className="text-gray-600">Please log in to view results.</p>
                 </div>
-
-                <div className="bg-green-50 p-6 rounded-lg border border-green-200">
-                  <h3 className="text-lg font-semibold text-green-900 mb-2">Progress Tracking</h3>
-                  <p className="text-green-700">Coming soon: Patient progress visualization and trends</p>
-                </div>
-
-                <div className="bg-purple-50 p-6 rounded-lg border border-purple-200">
-                  <h3 className="text-lg font-semibold text-purple-900 mb-2">Performance Metrics</h3>
-                  <p className="text-purple-700">Coming soon: Detailed performance analytics and insights</p>
-                </div>
-              </div>
             </div>
-          </div>
-        </main>
-      </div>
-    </AuthLayout>
-  );
+        );
+    }
+
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+            <div className="container mx-auto px-4 py-8">
+                <div className="mb-8">
+                    <h1 className="text-4xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span className="text-5xl mr-4">📊</span>
+                        {t('navigation.results')}
+                    </h1>
+                    <p className="text-gray-600 mb-8">
+                        {t('navigation.resultsDescription')}
+                    </p>
+                </div>
+
+                {/* Patient Selector */}
+                <div className="mb-8">
+                    <PatientSelector
+                        patients={patients}
+                        selectedPatient={selectedPatient}
+                        onPatientSelect={setSelectedPatient}
+                        loading={loading}
+                    />
+                </div>
+
+                {error && (
+                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                        {error}
+                        <button
+                            onClick={refreshData}
+                            className="ml-4 text-red-800 underline hover:no-underline"
+                        >
+                            Try again
+                        </button>
+                    </div>
+                )}
+
+                {loading ? (
+                    <div className="flex items-center justify-center py-12">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                        <span className="ml-4 text-gray-600">Loading results...</span>
+                    </div>
+                ) : (
+                    <div className="space-y-8">
+                        {/* Results Statistics */}
+                        {gameSessions.length > 0 && (
+                            <ResultsStats
+                                sessions={gameSessions}
+                                patient={selectedPatient}
+                            />
+                        )}
+
+                        {/* Sessions List */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div>
+                                <SessionsList
+                                    sessions={gameSessions}
+                                    selectedSession={selectedSession}
+                                    onSessionSelect={setSelectedSession}
+                                />
+                            </div>
+
+                            {/* Session Details */}
+                            <div>
+                                {selectedSession ? (
+                                    <SessionDetails
+                                        session={selectedSession}
+                                        onClose={() => setSelectedSession(null)}
+                                    />
+                                ) : (
+                                    <SessionOverview
+                                        sessions={gameSessions}
+                                        patient={selectedPatient}
+                                    />
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Empty State */}
+                        {gameSessions.length === 0 && !loading && (
+                            <div className="text-center py-12">
+                                <div className="text-6xl mb-4">🎯</div>
+                                <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                                    {selectedPatient
+                                        ? `No sessions found for ${selectedPatient.firstName} ${selectedPatient.lastName}`
+                                        : 'No game sessions found'
+                                    }
+                                </h3>
+                                <p className="text-gray-500">
+                                    {selectedPatient
+                                        ? 'This patient hasn\'t completed any game sessions yet.'
+                                        : 'Start playing games to see results here.'
+                                    }
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
 }

@@ -20,7 +20,7 @@ export default function TestLaboratory() {
               <p className="text-gray-600 mb-8">
                 {t('navigation.testLaboratoryDescription')}
               </p>
-
+              
               {/* Placeholder content for test laboratory */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-purple-50 p-6 rounded-lg border border-purple-200">
@@ -30,7 +30,7 @@ export default function TestLaboratory() {
                     Coming Soon
                   </button>
                 </div>
-
+                
                 <div className="bg-indigo-50 p-6 rounded-lg border border-indigo-200">
                   <h3 className="text-lg font-semibold text-indigo-900 mb-2">Test Templates</h3>
                   <p className="text-indigo-700 mb-4">Access pre-built test templates for common speech evaluations</p>
@@ -38,7 +38,7 @@ export default function TestLaboratory() {
                     Coming Soon
                   </button>
                 </div>
-
+                
                 <div className="bg-teal-50 p-6 rounded-lg border border-teal-200">
                   <h3 className="text-lg font-semibold text-teal-900 mb-2">Test Configuration</h3>
                   <p className="text-teal-700 mb-4">Configure test parameters, scoring, and evaluation criteria</p>
@@ -46,7 +46,7 @@ export default function TestLaboratory() {
                     Coming Soon
                   </button>
                 </div>
-
+                
                 <div className="bg-orange-50 p-6 rounded-lg border border-orange-200">
                   <h3 className="text-lg font-semibold text-orange-900 mb-2">Test Management</h3>
                   <p className="text-orange-700 mb-4">Manage, edit, and organize your custom test library</p>

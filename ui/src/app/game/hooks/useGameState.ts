@@ -1,19 +1,21 @@
 import { useState, useCallback } from 'react';
-import { GameQuestion, GameAnswer, GameResult, GameStats } from '../types';
+import { GameQuestion, GameAnswer, GameResult, GameStats, GameSessionData, DetailedGameAnswer } from '../types';
 import { GameLogicService } from '../services/gameLogic';
 
 interface UseGameStateProps {
   questions: GameQuestion[];
+  sessionData?: GameSessionData;
 }
 
-export function useGameState({ questions }: UseGameStateProps) {
+export function useGameState({ questions, sessionData }: UseGameStateProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameFinished, setGameFinished] = useState(false);
-  const [answers, setAnswers] = useState<GameAnswer[]>([]);
+  const [answers, setAnswers] = useState<DetailedGameAnswer[]>([]);
   const [lastResult, setLastResult] = useState<GameResult | null>(null);
   const [userAnswer, setUserAnswer] = useState("");
+  const [questionStartTime, setQuestionStartTime] = useState<Date | null>(null);
 
   const currentQuestion = questions[currentQuestionIndex];
   const totalQuestions = questions.length;
@@ -29,10 +31,13 @@ export function useGameState({ questions }: UseGameStateProps) {
 
   const startGame = useCallback(() => {
     setGameStarted(true);
+    setQuestionStartTime(new Date());
   }, []);
 
-  const checkAnswer = useCallback((answer: string) => {
+  const checkAnswer = useCallback((answer: string, transcription: string = answer) => {
     const isCorrect = GameLogicService.checkAnswer(answer, currentQuestion);
+    const now = new Date();
+    const timeToAnswer = questionStartTime ? (now.getTime() - questionStartTime.getTime()) / 1000 : 0;
 
     const result: GameResult = {
       correct: isCorrect,
@@ -40,11 +45,17 @@ export function useGameState({ questions }: UseGameStateProps) {
       got: answer
     };
 
-    const answerRecord = GameLogicService.createAnswerRecord(
-      currentQuestion,
-      answer,
-      isCorrect
-    );
+    const answerRecord: DetailedGameAnswer = {
+      questionId: currentQuestion.id,
+      question: currentQuestion.question,
+      expected: currentQuestion.expectedAnswer,
+      got: answer,
+      transcription,
+      correct: isCorrect,
+      points: currentQuestion.points,
+      timeToAnswer,
+      timestamp: now
+    };
 
     setLastResult(result);
     setUserAnswer(answer);
@@ -58,13 +69,14 @@ export function useGameState({ questions }: UseGameStateProps) {
     setTimeout(() => {
       nextQuestion();
     }, 3000);
-  }, [currentQuestion]);
+  }, [currentQuestion, questionStartTime]);
 
   const nextQuestion = useCallback(() => {
     if (currentQuestionIndex < totalQuestions - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
       setLastResult(null);
       setUserAnswer("");
+      setQuestionStartTime(new Date()); // Start timing for next question
     } else {
       setGameFinished(true);
     }
@@ -78,7 +90,14 @@ export function useGameState({ questions }: UseGameStateProps) {
     setLastResult(null);
     setUserAnswer("");
     setAnswers([]);
+    setQuestionStartTime(null);
   }, []);
+
+  // Calculate total game duration
+  const getTotalDuration = useCallback(() => {
+    if (!sessionData?.startTime) return 0;
+    return (new Date().getTime() - sessionData.startTime.getTime()) / 1000;
+  }, [sessionData?.startTime]);
 
   return {
     // State
@@ -93,11 +112,13 @@ export function useGameState({ questions }: UseGameStateProps) {
     stats,
     totalQuestions,
     maxScore,
+    sessionData,
 
     // Actions
     startGame,
     checkAnswer,
     nextQuestion,
-    resetGame
+    resetGame,
+    getTotalDuration
   };
 }

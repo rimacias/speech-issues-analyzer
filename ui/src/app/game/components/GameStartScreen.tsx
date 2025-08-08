@@ -7,14 +7,23 @@ interface GameStartScreenProps {
   totalQuestions: number;
   maxScore: number;
   onStartGame: () => void;
+  patientName?: string;
 }
 
-export function GameStartScreen({ totalQuestions, maxScore, onStartGame }: GameStartScreenProps) {
+export function GameStartScreen({ totalQuestions, maxScore, onStartGame, patientName }: GameStartScreenProps) {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <Forest/>
       <Card className="flex flex-col h-fit max-w-2xl mx-4 text-center bg-white z-1">
         <div className="mb-2">
+          {/* Patient greeting */}
+          {patientName && (
+            <div className="bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded-lg mb-4">
+              <h2 className="text-lg font-semibold">¡Hola, {patientName}! 👋</h2>
+              <p className="text-sm">¡Estás listo para una aventura divertida!</p>
+            </div>
+          )}
+          
           {/* Fun emoji header */}
           <div className="text-6xl mb-4">🎮✨</div>
           <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
