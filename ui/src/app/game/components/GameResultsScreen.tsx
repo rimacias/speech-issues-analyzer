@@ -20,10 +20,10 @@ export function GameResultsScreen({ stats, answers, onResetGame }: GameResultsSc
   const performance = getPerformanceMessage(stats.percentage);
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen w-screen flex items-center justify-center">
       <Forest />
       <div className="container mx-auto px-4 py-8 z-1">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl w-2/3 mx-auto">
           {/* Results Header */}
           <Card className="mb-8 text-center bg-gradient-to-br from-white to-blue-50">
             <div className="text-8xl mb-6 animate-bounce">{performance.emoji}</div>

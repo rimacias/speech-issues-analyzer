@@ -25,9 +25,9 @@ export function QuestionCard({ question }: QuestionCardProps) {
   const emoji = getQuestionEmoji(question.question);
 
   return (
-    <Card className="mb-8 bg-gradient-to-br from-blue-50 to-purple-50 z-1">
-      <div className="text-center mb-8">
-        <div className="text-6xl mb-6 animate-bounce">{emoji}</div>
+    <Card className="mb-2 bg-gradient-to-br from-blue-50 to-purple-50 z-1">
+      <div className="text-center mb-2">
+        <div className="text-6xl mb-2 animate-none">{emoji}</div>
         <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center justify-center">
           <span className="text-3xl mr-3">💭</span>
           Completa la oración:

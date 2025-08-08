@@ -64,10 +64,10 @@ export default function Game() {
 
     // Main Game Screen
     return (
-       <div className="min-h-screen flex items-center justify-center">
+       <div className="min-h-screen flex items-center justify-center bg-amber-100">
             <Forest />
-            <div className="container mx-auto px-4 py-8 z-1">
-                <div className="max-w-4xl mx-auto">
+            <div className="container w-1/2 h-screen bg-gradient-to-b from-green-500 to-green-700  border-8 rounded-4xl mx-auto px-4 z-1">
+                <div className="max-w-4xl mx-auto w-2/3">
                     <GameHeader
                         stats={gameState.stats}
                         currentQuestionPoints={gameState.currentQuestion.points}

@@ -1,7 +1,8 @@
 import { Button, Card } from "@/app/game/components/ui";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMicrophone } from '@fortawesome/free-solid-svg-icons';
+import { faMicrophone, faPlay } from '@fortawesome/free-solid-svg-icons';
 import Forest from "./Forest";
+import { faPlayCircle } from "@fortawesome/free-solid-svg-icons/faPlayCircle";
 
 interface GameStartScreenProps {
   totalQuestions: number;
@@ -11,17 +12,15 @@ interface GameStartScreenProps {
 
 export function GameStartScreen({ totalQuestions, maxScore, onStartGame }: GameStartScreenProps) {
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen h-screen w-screen flex items-center justify-center">
       <Forest/>
-      <Card className="flex flex-col h-fit max-w-2xl mx-4 text-center bg-white z-1">
+      <Card className="flex flex-col h-fit w-2/3 max-w-2xl mx-4 text-center bg-white z-1">
         <div className="mb-2">
           {/* Fun emoji header */}
           <div className="text-6xl mb-4">🎮✨</div>
-          <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-            <FontAwesomeIcon icon={faMicrophone} className="w-10 h-10 text-white" />
-          </div>
+
           <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
-             ¡Juego de Completar Palabras!
+             ¡Hablando con Loli!
           </h1>
           <p className="text-lg text-gray-600 mb-6">
             🎤 Escucha las preguntas y responde completando las oraciones.
@@ -45,7 +44,7 @@ export function GameStartScreen({ totalQuestions, maxScore, onStartGame }: GameS
           </div>
         </div>
 
-        <Card variant="info" className="mb-6">
+        <Card variant="info" className="mb-6 hidden">
           <h3 className="text-xl font-semibold text-blue-800 mb-4 flex items-center justify-center">
             <span className="text-2xl mr-2">📖</span>
             ¿Cómo jugar?
@@ -70,13 +69,15 @@ export function GameStartScreen({ totalQuestions, maxScore, onStartGame }: GameS
           </div>
         </Card>
 
-        <Button
+        <button
           onClick={onStartGame}
-          size="lg"
-          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold text-xl px-12 py-4"
+          className=" py-4 cursor-pointer"
+          title="Iniciar Juego"
         >
-          🚀 ¡Comenzar la Aventura! 🚀
-        </Button>
+            <span className="w-20 h-20 bg-gradient-to-r from-lime-500 to-green-500 hover:from-lime-600 hover:to-green-600 rounded-full flex items-center justify-center mx-auto ">
+            <FontAwesomeIcon icon={faPlay} className="text-white  text-xl font-bold"/>
+            </span>
+        </button>
       </Card>
     </div>
   );
