@@ -30,7 +30,7 @@ function Forest() {
 
 
     const generateTrees = (setTrees: (trees: Object[]) => void): void => {
-        const treeCount = 100;
+        const treeCount = 200;
         const maxAttempts = treeCount * 10;
         const newTrees: Object[] = [];
 
@@ -38,9 +38,9 @@ function Forest() {
 
         while (newTrees.length < treeCount && attempts < maxAttempts) {
             const newTree: Object = {
-            x: Math.random() * 100,
+            x: Math.random() * 110,
             y: Math.random() * 100,
-            size: Math.random() * 3 + 3, // Entre 3 y 6 rem
+            size: Math.random() + 5,
             };
 
             if (!isOverlapping(newTree, newTrees)) {
@@ -99,7 +99,9 @@ function Forest() {
                 ))}
             </div>
             <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-b from-green-400 to-green-800">
-
+                <div style={{position: 'relative', width: '100%', height: '100%',
+                                                    filter: 'blur(1px)',
+                }}>
                         <div
                             className="mountain bottom-35 left-0 bg-gradient-to-b from-amber-900 to-amber-950"
                             style={{
@@ -121,9 +123,9 @@ function Forest() {
                             style={{
                                 width: `20rem`,
                                 height: `15rem`,
-                                backgroundColor: '#964B00',
                             }}
                         />
+                        </div>
                 {rocks.map((rock, index) => (
                     <div
                         key={index}
@@ -144,7 +146,7 @@ function Forest() {
                         style={{
                             width: `${tree.size}rem`,
                             height: `${tree.size}rem`,
-                            left: `${tree.x}%`,
+                            left: `${tree.x-10}%`,
                             bottom: `${tree.y-10}%`,   
                             position: 'absolute',
                             zIndex: Math.floor(100 + (1000 - tree.y * 10) * 0.1),
@@ -154,17 +156,17 @@ function Forest() {
                         icon={faTree}
                         className={`absolute text-lime-700 stroke-green-900 stroke-5 h-1/2`}
                         style={{
-                        fontSize: `${tree.size}rem`,
-                        filter: 'blur(0.5px)',
+                        fontSize: `${tree.y>80?tree.size:tree.y>25?tree.size*1/((tree.y)/60):tree.size*1/((tree.y)/20)}rem`,
+                        filter: `blur(${(tree.y)/100 * 0.5}px)`,
                         }}
                     />
                     <FontAwesomeIcon
                         icon={faTree}
                         className={`text-green-800 h-1/2`}
                         style={{
-                        fontSize: `${tree.size}rem`,
+                        fontSize: `${tree.y>80?tree.size:tree.y>25?tree.size*1/((tree.y)/60):tree.size*1/((tree.y)/20)}rem`,
                         clipPath: 'inset(0 0 0 55%)',
-                        filter: 'blur(0.9px) grayscale(0.45)',
+                        filter: `blur(${(tree.y)/100 * 0.5}px) grayscale(0.45)`,
                         }}
                     />
                     </div>
