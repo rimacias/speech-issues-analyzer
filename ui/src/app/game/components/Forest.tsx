@@ -1,14 +1,69 @@
+'use client'
+
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTree, faSun, faCloud } from '@fortawesome/free-solid-svg-icons';
 import Image from 'next/image';
 
+type Object = {
+  x: number;
+  y: number;
+  size: number; 
+};
 
-function Forest() {
+function Forest({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
     const [trees, setTrees] = useState<{x: number,y: number, size: number}[]>([]);
     const [clouds, setClouds] = useState<{x: number,y: number, size: number}[]>([]);
     const [rocks, setRocks] = useState<{x: number,y: number, size: number}[]>([]);
+    const [flowers, setFlowers] = useState<{x: number,y: number, size: number}[]>([]);
+
+    const isOverlapping = (newObject:Object, existingObject:Object[]) => {
+        const buffer = 2;
+            return existingObject.some(object => {
+                const dx = (object.x - newObject.x);
+                const dy = (object.y - newObject.y);
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const sizeSum = (object.size + newObject.size) * 0.5 + buffer;
+                return distance < sizeSum;
+            });
+    };
+
+
+    const generateTrees = (setTrees: (trees: Object[]) => void): void => {
+        const treeCount = 200;
+        const maxAttempts = treeCount * 10;
+        const newTrees: Object[] = [];
+        let attempts = 0;
+        while (newTrees.length < treeCount && attempts < maxAttempts) {
+            const newTree: Object = {
+            x: Math.random() * 110,
+            y: Math.random() * 100,
+            size: Math.random() + 5,
+            };
+
+            if (!isOverlapping(newTree, newTrees)) {
+            newTrees.push(newTree);
+            }
+            attempts++;
+        }
+
+        setTrees(newTrees);
+    };
     useEffect(() => {
+        const generateFlowers = () => {
+            const flowerCount = 50; //Math.floor(Math.random() * 5) + 5;
+            const newFlowers = Array.from({ length: flowerCount }, () => ({
+                x: Math.random() * 100,
+                y: Math.random() * 90,
+                size: Math.random() * 0.4 + 0.5,
+            }));
+            setFlowers(newFlowers);
+        };
+
         const generateRocks = () => {
             const rockCount = 15; //Math.floor(Math.random() * 5) + 5;
             const newRocks = Array.from({ length: rockCount }, () => ({
@@ -17,15 +72,6 @@ function Forest() {
                 size: Math.random() * 0.4 + 0.5,
             }));
             setRocks(newRocks);
-        };
-        const generateTrees = () => {
-            const treeCount = 100;//Math.floor(Math.random() * 10) + 5;
-            const newTrees = Array.from({ length: treeCount }, () => ({
-                x: Math.random() * 100,
-                y: Math.random() * 101,
-                size: Math.random() * 3 + 3,
-            }));
-            setTrees(newTrees);
         };
 
         const generateClouds = () => {
@@ -39,13 +85,18 @@ function Forest() {
         };
         generateRocks();
         generateClouds();
-        generateTrees();
+        generateTrees(setTrees);
     }, []);
 
   return (
-    <>{(trees.length > 0 && clouds.length > 0) &&
+    <>{
+        (trees.length > 0 && clouds.length > 0) 
+        &&
         <div className="fixed inset-0">
-            <Image src={"/ani.png"} alt="Ani" className="absolute -bottom-8 -left-10 z-1" width={500} height={500}/>
+            <div className='relative z-202 h-screen w-screen'>
+                {children}
+            </div>
+            <Image src={"/ani.png"} alt="Ani" className="absolute -bottom-8 -left-10 z-201" width={500} height={500}/>
             <div className='absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-blue-500 to-blue-200 overflow-hidden'>
                 <FontAwesomeIcon icon={faSun} className="absolute text-yellow-400 blur" size="4x" />
                 {clouds.map((cloud, index) => (
@@ -64,57 +115,33 @@ function Forest() {
                 ))}
             </div>
             <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-b from-green-400 to-green-800">
-
+                <div style={{position: 'relative', width: '100%', height: '100%',
+                                                    filter: 'blur(1px)',
+                }}>
                         <div
-                            className="mountain bottom-35 left-0"
+                            className="mountain bottom-35 left-0 bg-gradient-to-b from-amber-900 to-amber-950"
                             style={{
                                 width: `10rem`,
                                 height: `10rem`,
-                                backgroundColor: '#964B00',
                             }}
                         />
 
                         <div
-                            className="mountain2 bottom-75 left-25"
+                            className="mountain2 bottom-75 left-25 bg-gradient-to-br from-amber-800 to-amber-950"
                             style={{
                                 width: `15rem`,
                                 height: `10rem`,
-                                backgroundColor: '#964B00',
                             }}
                         />
 
                         <div
-                            className="mountain3 bottom-130 left-250"
+                            className="mountain3 bottom-130 left-250 bg-gradient-to-t from-amber-900 from-25% via-amber-900 via-20% to-white" 
                             style={{
                                 width: `20rem`,
                                 height: `15rem`,
-                                backgroundColor: '#964B00',
                             }}
                         />
-                {trees.map((tree, index) => (
-                    <div key={index}  >
-                    <FontAwesomeIcon
-                        icon={faTree}
-                        className="text-lime-700 absolute h-1/2"
-                        style={{
-                        bottom: `${-10+tree.y}%`,
-                        left: `${tree.x}%`,
-                        fontSize: `${tree.size}rem`,
-                        }}
-                    />
-                    <FontAwesomeIcon
-                        icon={faTree}
-                        className="text-green-800 grayscale-35 absolute h-1/2"
-                        style={{
-                        bottom: `${-10+tree.y}%`,
-                        left: `${tree.x}%`,
-                        fontSize: `${tree.size}rem`,
-                        clipPath: 'inset(0 0 0 55%)',
-                        }}
-                    />
-                    </div>
-                    
-                ))}
+                        </div>
                 {rocks.map((rock, index) => (
                     <div
                         key={index}
@@ -129,6 +156,38 @@ function Forest() {
                             transform: `rotate(${Math.random() * 360}deg)`,
                         }}
                     />
+                ))}
+                {trees.map((tree, index) => (
+                    <div key={index} className={`h-fit`} 
+                        style={{
+                            width: `${tree.size}rem`,
+                            height: `${tree.size}rem`,
+                            left: `${tree.x-10}%`,
+                            bottom: `${tree.y-10}%`,   
+                            position: 'absolute',
+                            zIndex: Math.min(Math.floor((1000 - tree.y * 10) * 0.1), 200),
+                        }}
+                    >
+                    <FontAwesomeIcon
+                        icon={faTree}
+                        className={`absolute text-lime-700 stroke-green-900 stroke-5 h-1/2`}
+                        style={{
+                        fontSize: `${tree.y>80?tree.size:tree.y>25?tree.size*1/((tree.y)/60):tree.size*1/((tree.y)/20)}rem`,
+                        filter: `blur(${(tree.y)/90 * 0.65}px)`,
+                        }}
+                    />
+
+                    <FontAwesomeIcon
+                        icon={faTree}
+                        className={`text-green-800 h-1/2`}
+                        style={{
+                        fontSize: `${tree.y>80?tree.size:tree.y>25?tree.size*1/((tree.y)/60):tree.size*1/((tree.y)/20)}rem`,
+                        clipPath: 'inset(0 0 0 55%)',
+                        filter: `blur(${(tree.y)/90 * 0.65}px) grayscale(0.45)`,
+                        }}
+                    />
+                    </div>
+                    
                 ))}
         </div>
         </div>}

@@ -40,7 +40,7 @@ export interface AudioRecorderState {
 
 // New types for patient and session tracking
 export interface GameSessionData {
-  sessionId?: string;
+  sessionId: string;
   patientId: string;
   userId: string;
   patient: {

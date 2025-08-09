@@ -14,7 +14,7 @@ import {
 import { db } from '@/lib/firebase';
 
 export interface GameSession {
-  id?: string;
+  id: string;
   patientId: string;
   userId: string;
   patient: {
@@ -159,6 +159,7 @@ export class GameSessionService {
   static async getPatientGameSessions(
     userId: string,
     patientId: string,
+    gameSessionId?: string,
     options?: {
       limitCount?: number;
       sortOrder?: 'asc' | 'desc';
