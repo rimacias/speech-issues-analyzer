@@ -1,6 +1,6 @@
 import {GameAnswer, GameStats, GameSessionData, DetailedGameAnswer} from "@/app/game/types";
 import {Button, Card} from "@/app/game/components/ui";
-import Forest from "./Forest";
+
 
 interface GameResultsScreenProps {
   stats: GameStats;
@@ -24,7 +24,6 @@ export function GameResultsScreen({ stats, answers, onResetGame, patientName, se
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <Forest />
       <div className="container mx-auto px-4 py-8 z-1">
         <div className="max-w-4xl mx-auto">
           {/* Patient Session Info */}

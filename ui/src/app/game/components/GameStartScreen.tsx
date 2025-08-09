@@ -1,7 +1,6 @@
 import { Button, Card } from "@/app/game/components/ui";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMicrophone } from '@fortawesome/free-solid-svg-icons';
-import Forest from "./Forest";
 
 interface GameStartScreenProps {
   totalQuestions: number;
@@ -13,7 +12,6 @@ interface GameStartScreenProps {
 export function GameStartScreen({ totalQuestions, maxScore, onStartGame, patientName }: GameStartScreenProps) {
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <Forest/>
       <Card className="flex flex-col h-fit max-w-2xl mx-4 text-center bg-white z-1">
         <div className="mb-2">
           {/* Patient greeting */}
